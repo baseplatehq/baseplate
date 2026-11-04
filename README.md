@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://baseplatehq.github.io/baseplate/">
-    <img src="assets/banner.png" alt="baseplate: Make better games. The agent-native layer for Roblox." width="100%">
+    <img src="assets/banner.png" alt="baseplate: Safe VFX and sounds your AI can add to Roblox games." width="100%">
   </a>
 </p>
 
