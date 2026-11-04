@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moved to the Library · Baseplate</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://baseplatehq.github.io/baseplate/library/">
+<script>
+// Effects and sounds now live on one Library page. Old links keep working.
+var h = location.hash, m = h.match(/^#\/e\/(.+)$/);
+location.replace("../library/" + (m ? "#vfx/" + m[1] : "#sounds"));
+</script>
+</head>
+<body><p><a href="../library/#sounds">This page moved to the Library.</a></p></body>
+</html>

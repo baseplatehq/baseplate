@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library · Baseplate</title>
+<meta name="description" content="Every Baseplate component in one place: 600 safety-scanned Roblox effects and 906 game sounds, each with a name and description your AI agent can use.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../site.css">
+<style>
+.label{font-size:13px;font-weight:600;color:var(--blue);letter-spacing:-.005em}
+.layout{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:232px minmax(0,1fr);gap:48px;padding:0 40px}
+.toc{position:sticky;top:68px;height:calc(100vh - 68px);overflow-y:auto;padding:32px 0 48px;font-size:14px}
+.toc h4{margin:0 0 4px;padding:6px 10px;font-size:14px;font-weight:600;display:flex;justify-content:space-between}
+.toc h4 + ul{margin-bottom:20px}
+.toc ul{list-style:none;margin:0;padding:0}
+.toc li a{border-radius:8px;display:flex;justify-content:space-between;padding:4px 10px;color:var(--muted)}
+.toc a span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.toc a:hover{color:var(--ink);background:rgba(17,17,17,.05)}
+.toc a.on{color:var(--blue);background:var(--blue-wash)}
+main{padding:40px 0 0;min-width:0}
+.intro h1{font-size:64px;line-height:1;letter-spacing:-.055em;font-weight:600;margin:10px 0 12px}
+.intro p{font-size:17px;color:var(--muted);margin:0;max-width:720px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0 0}
+.stats div{border-radius:14px;background:var(--white);box-shadow:inset 0 0 0 1px var(--line);padding:20px 22px}
+.stats b{display:block;font-size:26px;letter-spacing:-.03em;font-weight:600}
+.searchbar{position:sticky;top:68px;z-index:10;background:var(--white);padding:20px 0;margin-top:32px;display:flex;gap:12px;align-items:center}
+.search{border-radius:12px;flex:1;height:48px;padding:0 16px;border:0;background:var(--white);box-shadow:inset 0 0 0 1px var(--line);font:inherit;font-size:15px;color:var(--ink)}
+.search:focus{outline:none;box-shadow:inset 0 0 0 2px var(--blue)}
+.found{font-size:13.5px;color:var(--muted);white-space:nowrap}
+.section{padding-top:24px}
+.section-head{display:flex;flex-direction:column;gap:8px;padding:40px 0 0}
+.section-head h2{font-size:34px;letter-spacing:-.035em;font-weight:600;margin:0}
+.section-head p{margin:0;color:var(--muted);font-size:15px}
+.sub{padding-top:56px;scroll-margin-top:148px}
+.sub[hidden],.item[hidden],.section[hidden]{display:none}
+.sub h3{display:flex;align-items:baseline;gap:10px;margin:0 0 16px;font-size:17px;font-weight:600;text-transform:capitalize}
+.sub h3 .label{text-transform:uppercase}
+.sub h3 small{font-weight:400;font-size:14px;color:var(--muted);text-transform:none}
+
+/* effect cards: white, soft hairline border, room to breathe */
+.fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.fx{border-radius:14px;display:flex;flex-direction:column;background:var(--white);box-shadow:inset 0 0 0 1px var(--line);text-align:left;transition:box-shadow .15s}
+.fx:hover{box-shadow:inset 0 0 0 1px var(--blue)}
+.fx .body{padding:20px 22px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.name{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink);overflow-wrap:anywhere}
+.desc{font-size:14.5px;color:var(--muted);line-height:1.5}
+.meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;margin-top:auto;padding-top:8px}
+.meta .c{display:inline-flex;align-items:center;gap:6px}
+.meta .c i{border-radius:3px;width:9px;height:9px;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+
+/* sound rows */
+.sfx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:20px}
+.sfx{border-radius:14px;display:grid;grid-template-columns:40px minmax(0,1fr);gap:16px;align-items:start;background:var(--white);box-shadow:inset 0 0 0 1px var(--line);padding:18px 20px 18px 18px;transition:box-shadow .15s,background .15s}
+.sfx:hover{box-shadow:inset 0 0 0 1px var(--blue)}
+.sfx.playing{background:var(--blue-wash);box-shadow:inset 0 0 0 1px var(--blue)}
+.play{border-radius:999px;width:40px;height:40px;background:var(--blue);display:grid;place-items:center;flex:none}
+.play svg{width:14px;height:14px;fill:var(--white)}
+.sfx.playing .play,.drawer .play.on{background:var(--blue-deep)}
+.sfx .open{display:flex;flex-direction:column;gap:6px;text-align:left;min-width:0}
+
+/* detail drawer */
+.scrim{position:fixed;inset:0;background:rgba(14,14,13,.28);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:var(--white);z-index:41;transform:translateX(100%);transition:transform .25s var(--ease);overflow-y:auto;box-shadow:-24px 0 48px rgba(14,14,13,.08)}
+.drawer.on{transform:none}
+.drawer .head{position:sticky;top:0;background:var(--white);display:flex;align-items:center;justify-content:space-between;padding:16px 24px;box-shadow:0 1px 0 var(--line);z-index:1}
+.drawer .inner{padding:24px}
+.drawer h2{font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-.01em;margin:8px 0 10px;overflow-wrap:anywhere}
+.drawer .lead{color:var(--muted);margin:0 0 20px}
+.drawer h3{font-size:14px;font-weight:600;margin:28px 0 10px}
+.drawer .preview{border-radius:12px;overflow:hidden;background:var(--fill)}
+.drawer .preview img{width:100%;aspect-ratio:16/10;object-fit:cover}
+.drawer .preview .note{padding:10px 14px;font-size:13px;color:var(--muted)}
+.drawer .player{display:flex;align-items:center;gap:14px;padding:16px}
+.drawer .player .play{width:48px;height:48px}
+.wave{flex:1;height:40px;display:flex;align-items:center;gap:2px}
+.wave i{flex:1;background:var(--muted);min-height:2px}
+.facts{width:100%;border-collapse:collapse;font-size:14px}
+.facts td{padding:9px 0;vertical-align:top;box-shadow:inset 0 -1px 0 var(--line)}
+.facts td:first-child{width:140px;color:var(--muted)}
+.facts code{font-size:12.5px;overflow-wrap:anywhere}
+.drawer .actions{display:flex;gap:8px;flex-wrap:wrap}
+.drawer .step{font-size:14px;color:var(--muted);margin:0 0 10px}
+.drawer .code{margin-bottom:12px}
+.x{border-radius:9px;width:36px;height:36px;display:grid;place-items:center;background:var(--fill)}
+.x:hover{background:var(--line)}
+.empty{padding:48px 0;color:var(--muted)}
+
+
+@media (max-width:860px){
+  .fx-grid,.sfx-grid{grid-template-columns:1fr}
+  .layout{grid-template-columns:1fr;padding:0 16px;gap:0}
+  .toc{display:none}
+  .intro h1{font-size:34px}
+  .sfx-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="../" aria-label="Baseplate home"><img src="../brand/baseplate-logo-horizontal-ink.svg" alt="baseplate" width="106" height="24"></a>
+    <nav id="nav" aria-label="Main">
+      <a class="on" href="./">Library</a>
+      <a href="../docs/">Docs</a>
+      <a href="../#results">Results</a>
+      <a href="../#safety">Safety</a>
+    </nav>
+    <div class="right">
+      <a class="btn ink sm" href="../docs/">Get started</a>
+      <button class="menu-btn" id="menu" aria-expanded="false" aria-controls="nav">Menu</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="toc" id="toc" aria-label="Library contents"></aside>
+  <main>
+    <div class="intro">
+      <span class="label">Library</span>
+      <h1>Every component, one page</h1>
+      <p>Effects and sounds your AI agent adds by name. Each one has a plain description written for agents, so it picks the right one in a single search.</p>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="searchbar">
+      <input class="search" id="q" type="search" placeholder="Search effects and sounds: coin, explosion, rain, click…" aria-label="Search the library" autocomplete="off">
+      <span class="found" id="found"></span>
+    </div>
+    <div id="lib"><p class="empty">Loading the library…</p></div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Component details" aria-hidden="true"></aside>
+
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <a class="logo" href="../"><img src="../brand/baseplate-logo-horizontal-ink.svg" alt="baseplate" width="106" height="24"></a>
+      <p>The component library for building Roblox games with AI.</p>
+    </div>
+    <div><h4>Product</h4><ul><li><a href="./">Library</a></li><li><a href="../#results">Results</a></li><li><a href="../#safety">Safety</a></li></ul></div>
+    <div><h4>Developers</h4><ul><li><a href="../docs/">Docs</a></li><li><a href="https://www.npmjs.com/package/baseplate-cli">npm</a></li><li><a href="../r/vfx-effects.json">vfx-effects.json</a></li><li><a href="../r/sfx-files.json">sfx-files.json</a></li></ul></div>
+    <div><h4>Company</h4><ul><li><a href="../vfx-report.html">Scan report</a></li><li><a href="mailto:hello.baseplate@proton.me">Contact</a></li></ul></div>
+    <div class="legal"><span>© 2026 Baseplate.</span><span>Not affiliated with Roblox Corporation.</span></div>
+  </div>
+</footer>
+
+<script>
+const R = "../r/";
+const ICON_PLAY = '<svg viewBox="0 0 24 24"><path d="M7 4.5v15L19.5 12z"/></svg>';
+const ICON_STOP = '<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12"/></svg>';
+const ICON_X = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const COLORS = { white: "#F4F4F4", red: "#E5383B", blue: "#2F6BFF", orange: "#FF8A1F", black: "#1A1A1A", grey: "#8E8E8E", yellow: "#FFD43B", green: "#2FBF5B", purple: "#8B4DFF", cyan: "#22D3EE", pink: "#FF6FB5" };
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const slug = (s) => s.replace(/[^a-z0-9]+/g, "-");
+const clean = (d) => d.replace(/ Source: .*$/, "");
+
+let effects = [], sounds = [], audio = null, playingEl = null;
+
+/* ---------- code blocks ---------- */
+const store = {};
+function hl(src) {
+  const re = /(--[^\n]*)|("(?:[^"\\]|\\.)*")|\b(local|function|return|end|if|then|else|for|in|do|not|and|or|nil|true|false)\b|\b(\d+(?:\.\d+)?)\b|\b([A-Z][A-Za-z0-9]+)(?=[.:])/g;
+  let out = "", last = 0, m;
+  while ((m = re.exec(src))) {
+    out += esc(src.slice(last, m.index));
+    out += `<span class="${m[1] ? "c" : m[2] ? "s" : m[3] ? "k" : m[4] ? "n" : "f"}">${esc(m[0])}</span>`;
+    last = re.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+function code(src, plain) {
+  const id = "c" + Object.keys(store).length;
+  store[id] = src;
+  return `<div class="code"><pre>${plain ? esc(src) : hl(src)}</pre><button class="copy" data-copy-id="${id}">Copy</button></div>`;
+}
+
+/* ---------- boxes ---------- */
+function fxBox(e) {
+  const colors = e.colors.map((c) => `<span class="c"><i style="background:${COLORS[c] || "#ccc"}"></i>${c}</span>`).join("");
+  return `<a class="fx item" href="#vfx/${esc(e.name)}" data-kind="vfx" data-name="${esc(e.name)}" data-search="${esc([e.name, clean(e.description), e.category, e.kind, e.size, ...e.colors, ...e.layers, e.pack].join(" ").toLowerCase())}">
+    <div class="body"><span class="name">${esc(e.name)}</span><span class="desc">${esc(clean(e.description))}</span>
+      <span class="meta"><span>${e.loops ? "Loop" : "Burst"} · ${e.duration}s · ${e.size}</span>${colors}</span></div>
+  </a>`;
+}
+function sfxBox(f) {
+  return `<div class="sfx item" data-kind="sfx" data-name="${esc(f.component)}" data-search="${esc([f.component, f.description, f.category, f.loops ? "loop" : "", f.voice || ""].join(" ").toLowerCase())}">
+    <button class="play" data-play="${esc(f.component)}" aria-label="Play ${esc(f.component)}">${ICON_PLAY}</button>
+    <button class="open" data-open="sfx" data-name="${esc(f.component)}"><span class="name">${esc(f.component)}</span><span class="desc">${esc(f.description)}</span>
+      <span class="meta"><span>${f.format.toUpperCase()}${f.loops ? " · Loop" : ""}</span></span></button>
+  </div>`;
+}
+function groups(list, key) {
+  const m = new Map();
+  list.forEach((x) => { if (!m.has(x[key])) m.set(x[key], []); m.get(x[key]).push(x); });
+  return [...m.entries()].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
+}
+
+function render() {
+  const fxGroups = groups(effects, "category");
+  const sfxGroups = groups(sounds, "category");
+  $("#stats").innerHTML = [
+    [effects.length, "Effects"], [sounds.length, "Sounds"], [fxGroups.length + sfxGroups.length, "Categories"],
+  ].map(([n, l]) => `<div><b>${typeof n === "number" ? n.toLocaleString() : n}</b><span class="label">${l}</span></div>`).join("");
+  $("#lib").innerHTML =
+    `<section class="section" id="effects"><div class="section-head"><h2>Effects</h2><p>${effects.length} particle effects from safety-scanned Creator Store packs, scripts removed, pinned to the scanned version.</p></div>` +
+    fxGroups.map(([c, xs]) => `<div class="sub" id="effects-${slug(c)}"><h3>${esc(c)} <small>${xs.length}</small></h3><div class="fx-grid">${xs.map(fxBox).join("")}</div></div>`).join("") +
+    `</section><section class="section" id="sounds"><div class="section-head"><h2>Sounds</h2><p>${sounds.length} sound files. Every file is its own component, and its description is measured from the audio, so no two read the same.</p></div>` +
+    sfxGroups.map(([c, xs]) => `<div class="sub" id="sounds-${slug(c)}"><h3>${esc(c)} <small>${xs.length}</small></h3><div class="sfx-grid">${xs.map(sfxBox).join("")}</div></div>`).join("") +
+    `</section><p class="empty" id="none" hidden>Nothing matches. Try a broader word, like "hit" or "magic".</p>`;
+  const tocList = (sec, gs) => gs.map(([c, xs]) => `<li><a href="#${sec}-${slug(c)}" data-sub="${sec}-${slug(c)}">${esc(c)} <span>${xs.length}</span></a></li>`).join("");
+  $("#toc").innerHTML =
+    `<h4><a href="#effects">Effects</a><span class="label">${effects.length}</span></h4><ul>${tocList("effects", fxGroups)}</ul>` +
+    `<h4><a href="#sounds">Sounds</a><span class="label">${sounds.length}</span></h4><ul>${tocList("sounds", sfxGroups)}</ul>`;
+  filter();
+  spy();
+}
+
+/* ---------- search ---------- */
+function filter() {
+  const words = $("#q").value.toLowerCase().split(/\s+/).filter(Boolean);
+  let fx = 0, sx = 0;
+  document.querySelectorAll(".item").forEach((el) => {
+    el.hidden = !words.every((w) => el.dataset.search.includes(w));
+    if (!el.hidden) el.dataset.kind === "vfx" ? fx++ : sx++;
+  });
+  document.querySelectorAll(".sub").forEach((s) => (s.hidden = !s.querySelector(".item:not([hidden])")));
+  $("#effects").hidden = !fx;
+  $("#sounds").hidden = !sx;
+  $("#none").hidden = fx + sx > 0;
+  document.querySelectorAll(".toc li").forEach((li) => (li.hidden = document.getElementById(li.firstChild.dataset.sub).hidden));
+  $("#found").textContent = words.length ? `${fx} effects · ${sx} sounds` : `${effects.length + sounds.length} components`;
+}
+$("#q").addEventListener("input", filter);
+
+/* ---------- highlight the subsection in view ---------- */
+function spy() {
+  const links = new Map([...document.querySelectorAll(".toc [data-sub]")].map((a) => [a.dataset.sub, a]));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (!en.isIntersecting) return;
+      links.forEach((a) => a.classList.remove("on"));
+      links.get(en.target.id)?.classList.add("on");
+    });
+  }, { rootMargin: "-140px 0px -70% 0px" });
+  document.querySelectorAll(".sub").forEach((s) => io.observe(s));
+}
+
+/* ---------- audio ---------- */
+function stop() {
+  if (audio) { audio.pause(); audio = null; }
+  document.querySelectorAll("[data-play].on, .sfx.playing").forEach((el) => el.classList.remove("on", "playing"));
+  document.querySelectorAll("[data-play]").forEach((b) => (b.innerHTML = ICON_PLAY));
+}
+function play(name) {
+  const same = playingEl === name;
+  stop();
+  if (same) { playingEl = null; return; }
+  const f = sounds.find((s) => s.component === name);
+  if (!f) return;
+  audio = new Audio(R + f.url);
+  audio.onended = () => { stop(); playingEl = null; };
+  audio.play().catch(() => { stop(); playingEl = null; });
+  playingEl = name;
+  document.querySelectorAll(`[data-play="${CSS.escape(name)}"]`).forEach((b) => { b.innerHTML = ICON_STOP; b.classList.add("on"); b.closest(".sfx")?.classList.add("playing"); });
+}
+
+/* ---------- detail drawer ---------- */
+function wave(name) {
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return Array.from({ length: 56 }, (_, i) => { h = (h * 1103515245 + 12345) >>> 0; const env = Math.sin(Math.PI * (i + 1) / 57); return `<i style="height:${Math.max(6, Math.round(env * (30 + (h % 70))))}%"></i>`; }).join("");
+}
+function vfxDetail(e) {
+  return `<span class="label">Effect · ${esc(e.category)}</span><h2>${esc(e.name)}</h2><p class="lead">${esc(clean(e.description))}</p>
+    <div class="actions"><button class="btn ink sm" data-copy-text="${esc(e.name)}">Copy name</button><a class="btn line sm" href="https://create.roblox.com/store/asset/${e.asset_id}" target="_blank" rel="noopener">Open pack in Creator Store</a></div>
+    <h3>Preview</h3><div class="preview"><img src="${R}vfx-thumbs/${e.asset_id}.png" alt="Creator Store thumbnail for ${esc(e.pack)}"><p class="note">This is the store thumbnail for the whole pack "${esc(e.pack)}", not this single effect. Your agent picks from the description.</p></div>
+    <h3>Add with your agent</h3><p class="step">Ask in plain words, or call the tool by name:</p>${code(`add_vfx(["${e.name}"])`, true)}
+    <h3>Use in your game</h3>${code(e.loops ? `local stop = Juice.attach("${e.name}", part) -- keeps running\nstop() -- when you are done` : `Juice.play("${e.name}", part) -- a BasePart, Model or Vector3`)}
+    <h3>Details</h3><table class="facts">
+      <tr><td>Type</td><td>${e.loops ? "Loop" : "Burst"}, about ${e.duration}s, ${e.size}</td></tr>
+      <tr><td>Colors</td><td>${e.colors.join(", ")}</td></tr>
+      <tr><td>Layers</td><td>${e.layers.join(", ") || "none"}</td></tr>
+      <tr><td>Emitters</td><td>${e.emitters}</td></tr>
+      <tr><td>Source pack</td><td>${esc(e.pack)}, asset <code>${e.asset_id}</code></td></tr>
+      <tr><td>Pinned version</td><td><code>${esc(e.pinned_version)}</code></td></tr>
+      <tr><td>Safety</td><td>Scanned, scripts removed. <code>add_vfx</code> refuses the effect if the pack changes after this version.</td></tr>
+    </table>`;
+}
+function sfxDetail(f) {
+  return `<span class="label">Sound · ${esc(f.category)}</span><h2>${esc(f.component)}</h2><p class="lead">${esc(f.description)}</p>
+    <div class="actions"><button class="btn ink sm" data-copy-text="${esc(f.component)}">Copy name</button><a class="btn line sm" href="${R + f.url}" download>Download .${f.format}</a></div>
+    <h3>Preview</h3><div class="preview"><div class="player"><button class="play" data-play="${esc(f.component)}" aria-label="Play ${esc(f.component)}">${ICON_PLAY}</button><div class="wave" aria-hidden="true">${wave(f.component)}</div></div></div>
+    <h3>Add with your agent</h3><p class="step">Ask in plain words, or call the tool by name:</p>${code(`add_sfx(["${f.component}"])`, true)}
+    <p class="step">It copies the file into <code>assets/sounds/</code> and registers it in <code>Sounds.luau</code>. With <code>ROBLOX_API_KEY</code> and <code>ROBLOX_CREATOR</code> in your project's <code>.env</code>, it also uploads it to your Roblox account. Otherwise you import the file once in Studio's Asset Manager.</p>
+    <h3>Use in your game</h3>${code(`Juice.sfx("${f.component}") -- plays flat, for UI\nJuice.sfx("${f.component}", part) -- plays from a part in the world`)}
+    <h3>Details</h3><table class="facts">
+      <tr><td>File</td><td><code>${esc(f.file)}</code></td></tr>
+      <tr><td>Format</td><td>${f.format.toUpperCase()}${f.loops ? ", loops" : ""}</td></tr>
+      ${f.voice ? `<tr><td>Voice</td><td>${esc(f.voice)}</td></tr>` : ""} </table>`;
+}
+function open(kind, name, push = true) {
+  const item = kind === "vfx" ? effects.find((e) => e.name === name) : sounds.find((f) => f.component === name);
+  if (!item) return;
+  $("#drawer").innerHTML = `<div class="head"><span class="label">${kind === "vfx" ? "Effect" : "Sound"}</span><button class="x" data-close aria-label="Close">${ICON_X}</button></div><div class="inner">${kind === "vfx" ? vfxDetail(item) : sfxDetail(item)}</div>`;
+  $("#drawer").classList.add("on");
+  $("#drawer").setAttribute("aria-hidden", "false");
+  $("#scrim").classList.add("on");
+  $("#drawer").scrollTop = 0;
+  if (push) history.replaceState(null, "", `#${kind}/${name}`);
+}
+function close() {
+  $("#drawer").classList.remove("on");
+  $("#drawer").setAttribute("aria-hidden", "true");
+  $("#scrim").classList.remove("on");
+  if (location.hash.match(/^#(vfx|sfx)\//)) history.replaceState(null, "", location.pathname);
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", async (ev) => {
+  const t = ev.target;
+  const copyId = t.closest("[data-copy-id]"), copyText = t.closest("[data-copy-text]");
+  if (copyId || copyText) {
+    const btn = copyId || copyText;
+    try { await navigator.clipboard.writeText(copyId ? store[btn.dataset.copyId] : btn.dataset.copyText); } catch {}
+    const was = btn.textContent;
+    btn.textContent = "Copied";
+    setTimeout(() => (btn.textContent = was), 1200);
+    return;
+  }
+  const p = t.closest("[data-play]");
+  if (p) return play(p.dataset.play);
+  const o = t.closest("[data-open]");
+  if (o) return open(o.dataset.open, o.dataset.name);
+  const fx = t.closest(".fx");
+  if (fx) { ev.preventDefault(); return open("vfx", fx.dataset.name); }
+  if (t.closest("[data-close]") || t === $("#scrim")) return close();
+});
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") close();
+  if (ev.key === "/" && document.activeElement !== $("#q")) { ev.preventDefault(); $("#q").focus(); }
+});
+$("#menu").onclick = () => $("#menu").setAttribute("aria-expanded", $("#nav").classList.toggle("open"));
+
+Promise.all([fetch(R + "vfx-effects.json").then((r) => r.json()), fetch(R + "sfx-files.json").then((r) => r.json())])
+  .then(([v, s]) => {
+    effects = v.effects;
+    sounds = s.files;
+    render();
+    const m = decodeURIComponent(location.hash).match(/^#(vfx|sfx)\/(.+)$/);
+    if (m) open(m[1], m[2], false);
+    else if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+  })
+  .catch(() => ($("#lib").innerHTML = '<p class="empty">Could not load the library. Reload the page to try again.</p>'));
+</script>
+</body>
+</html>

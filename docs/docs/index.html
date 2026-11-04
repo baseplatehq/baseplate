@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docs · Baseplate</title>
+<meta name="description" content="Set up Baseplate with your coding agent, and reference for its four tools, the Juice runtime, configuration and lock files.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../site.css">
+<style>
+.layout{max-width:var(--wrap);margin:0 auto;padding:0 40px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:72px}
+.toc{position:sticky;top:68px;align-self:start;padding:56px 0;font-size:15px}
+.toc h4{font-size:13px;margin:0 0 10px;color:var(--blue);letter-spacing:0}
+.toc ul{list-style:none;margin:0 0 28px;padding:0}
+.toc li a{display:block;padding:5px 0;opacity:.7}
+.toc li a:hover,.toc li a.on{opacity:1}
+.toc li a.on{color:var(--blue);font-weight:600}
+article{padding:56px 0 120px;max-width:760px;min-width:0}
+article h1{font-size:56px;letter-spacing:-.05em;line-height:1}
+article .intro{font-size:20px;margin-top:20px;line-height:1.5}
+article h2{font-size:32px;letter-spacing:-.04em;margin-top:80px;scroll-margin-top:96px}
+article h3{font-size:20px;letter-spacing:-.02em;margin-top:40px;scroll-margin-top:96px}
+article h3 code{font-size:.95em;color:var(--blue)}
+article p{margin-top:14px}
+article ul,article ol{margin:14px 0 0;padding-left:22px}
+article li{margin:6px 0}
+article .code{margin-top:18px}
+article p code,article li code,article td code{border-radius:5px;background:var(--blue-wash);color:var(--ink);padding:2px 6px}
+.ref{width:100%;border-collapse:collapse;margin-top:18px;font-size:15.5px}
+.ref th{text-align:left;font-size:13px;color:var(--blue);padding:0 16px 10px 0;font-weight:600}
+.ref td{padding:12px 16px 12px 0;box-shadow:inset 0 1px 0 var(--line);vertical-align:top}
+.ref td:first-child{white-space:nowrap}
+.note{border-radius:12px;margin-top:20px;padding:18px 20px;background:var(--blue-wash);font-size:15.5px}
+.note b{color:var(--blue)}
+@media (max-width:900px){.layout{grid-template-columns:1fr;padding:0 20px;gap:0}.toc{display:none}article h1{font-size:40px}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="../" aria-label="Baseplate home"><img src="../brand/baseplate-logo-horizontal-ink.svg" alt="baseplate" width="106" height="24"></a>
+    <nav id="nav" aria-label="Main">
+      <a href="../library/">Library</a>
+      <a class="on" href="./">Docs</a>
+      <a href="../#results">Results</a>
+      <a href="../#safety">Safety</a>
+    </nav>
+    <div class="right">
+      <a class="btn ink sm" href="#quickstart">Get started</a>
+      <button class="menu-btn" id="menu" aria-expanded="false" aria-controls="nav">Menu</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="toc" aria-label="On this page">
+    <h4>Start</h4>
+    <ul><li><a href="#quickstart">Quickstart</a></li><li><a href="#how">How it works</a></li></ul>
+    <h4>Reference</h4>
+    <ul><li><a href="#find_vfx">find_vfx</a></li><li><a href="#add_vfx">add_vfx</a></li><li><a href="#find_sfx">find_sfx</a></li><li><a href="#add_sfx">add_sfx</a></li><li><a href="#juice">Juice runtime</a></li><li><a href="#config">Configuration</a></li><li><a href="#locks">Lock files</a></li><li><a href="#cli">CLI</a></li><li><a href="#catalog">Catalog JSON</a></li><li><a href="#faq">FAQ</a></li></ul>
+  </aside>
+
+  <article>
+    <span class="kicker">Docs</span>
+    <h1 style="margin-top:18px">Baseplate docs</h1>
+    <p class="intro">Baseplate is an MCP server that gives your coding agent a library of safety-scanned Roblox effects and game sounds, each with a name and a plain description. Set it up once, then ask for what you need in plain words.</p>
+
+    <h2 id="quickstart">Quickstart</h2>
+    <p>You need Node 18 or newer, a <a class="link" href="https://rojo.space">Rojo</a> project, and the Roblox Studio MCP so your agent can load effects into your place.</p>
+    <h3>1. Connect your agent</h3>
+    <p>Claude Code:</p>
+    <div class="code"><pre>claude mcp add baseplate -- npx -y baseplate-cli mcp</pre><button class="copy" data-copy="claude mcp add baseplate -- npx -y baseplate-cli mcp">Copy</button></div>
+    <p>Codex, in <code>~/.codex/config.toml</code>:</p>
+    <div class="code"><pre>[mcp_servers.baseplate]
+command = "npx"
+args = ["-y", "baseplate-cli", "mcp"]</pre></div>
+    <p>Cursor, in <code>.cursor/mcp.json</code>:</p>
+    <div class="code"><pre>{
+  "mcpServers": {
+    "baseplate": { "command": "npx", "args": ["-y", "baseplate-cli", "mcp"] }
+  }
+}</pre></div>
+    <h3>2. Ask for something</h3>
+    <p>Open your Rojo project with your agent and ask in plain words, for example: "Add a fire explosion when the rocket hits", or "Make collecting a coin feel rewarding". The agent searches, adds and wires up the effect or sound.</p>
+    <h3>3. Optional: automatic sound uploads</h3>
+    <p>Add an Open Cloud API key to your project's <code>.env</code> and <code>add_sfx</code> uploads sounds to your Roblox account for you. See <a class="link" href="#config">Configuration</a>.</p>
+
+    <h2 id="how">How it works</h2>
+    <ol>
+      <li><b>Find.</b> Your agent calls <code>find_vfx</code> or <code>find_sfx</code> with plain words and gets back component names with descriptions.</li>
+      <li><b>Add.</b> It calls <code>add_vfx</code> or <code>add_sfx</code> with the names it picked. Effects are checked against their scanned version; sounds are copied into your project.</li>
+      <li><b>Play.</b> It writes one line of Luau with the Juice runtime: <code>Juice.play("explosion/fire", part)</code> or <code>Juice.sfx("pickup/coin-3", part)</code>.</li>
+    </ol>
+
+    <h2 id="find_vfx">find_vfx</h2>
+    <p>Searches the 600 effects by what they are for. Returns up to 5 single effects, each with its name, a one-line description and the pack it comes from.</p>
+    <table class="ref"><thead><tr><th>Argument</th><th>Description</th></tr></thead><tbody>
+      <tr><td><code>query</code></td><td>Plain words, for example "fire explosion" or "electric aura".</td></tr>
+    </tbody></table>
+    <div class="code"><pre>find_vfx("fire explosion")
+explosion/fire: Red and black fire explosion burst with sparks and particles, about 4s, big.</pre></div>
+
+    <h2 id="add_vfx">add_vfx</h2>
+    <p>Adds effects by name. For each effect it confirms with the Creator Store that the pack is still the version Baseplate scanned, adds the Juice runtime if it is missing, records the effect in <code>vfx.json</code>, and returns one Luau snippet for the Roblox Studio MCP's <code>execute_luau</code>. The snippet loads the effect into <code>ReplicatedStorage.BaseplateVFX</code> with its scripts removed.</p>
+    <table class="ref"><thead><tr><th>Argument</th><th>Description</th></tr></thead><tbody>
+      <tr><td><code>names</code></td><td>Effect names from <code>find_vfx</code>, for example <code>["explosion/fire"]</code>.</td></tr>
+      <tr><td><code>project_dir</code></td><td>Optional. The Rojo project root. Defaults to the current directory.</td></tr>
+    </tbody></table>
+    <div class="note"><b>Refused when:</b> the name is unknown, the pack changed after its scan, or the Creator Store can't be reached to confirm the version.</div>
+
+    <h2 id="find_sfx">find_sfx</h2>
+    <p>Searches the 906 sounds by what they are for or how they sound. Every sound file is its own component, and each description is measured from the audio: length, tone or noise, pitch, rising or falling, hits. Returns up to 8.</p>
+    <table class="ref"><thead><tr><th>Argument</th><th>Description</th></tr></thead><tbody>
+      <tr><td><code>query</code></td><td>Plain words, for example "coin pickup", "short bright click" or "rain loop".</td></tr>
+    </tbody></table>
+    <div class="code"><pre>find_sfx("coin pickup")
+pickup/coin-3: Coin pickup: 0.35s, tonal, high (about 1314 Hz), tone center 1.5 kHz, tail 0.19s.</pre></div>
+
+    <h2 id="add_sfx">add_sfx</h2>
+    <p>Adds sounds by name. For each sound it copies the file to <code>assets/sounds/&lt;name&gt;</code>, adds the Juice runtime if it is missing, registers the sound in <code>Sounds.luau</code> and records it in <code>sfx.json</code>. With credentials set, it uploads the file to your Roblox account and fills in the asset ID. Without them, it tells you which files to import in Studio's Asset Manager.</p>
+    <table class="ref"><thead><tr><th>Argument</th><th>Description</th></tr></thead><tbody>
+      <tr><td><code>names</code></td><td>Sound names from <code>find_sfx</code>, for example <code>["pickup/coin-3"]</code>.</td></tr>
+      <tr><td><code>project_dir</code></td><td>Optional. The Rojo project root. Defaults to the current directory.</td></tr>
+    </tbody></table>
+    <p>Adding a sound again keeps any asset ID it already has.</p>
+
+    <h2 id="juice">Juice runtime</h2>
+    <p>Juice is a small Luau module the add tools copy into <code>src/shared/Juice</code>. Call it from client code. A target is a <code>Vector3</code>, <code>BasePart</code> or <code>Model</code>.</p>
+    <table class="ref"><thead><tr><th>Function</th><th>What it does</th></tr></thead><tbody>
+      <tr><td><code>Juice.play(name, target?)</code></td><td>Plays the effect and the sound with that name, whichever exist.</td></tr>
+      <tr><td><code>Juice.vfx(name, target)</code></td><td>Plays only the effect.</td></tr>
+      <tr><td><code>Juice.attach(name, target)</code></td><td>Starts a looping effect and returns a <code>stop()</code> function.</td></tr>
+      <tr><td><code>Juice.sfx(name, target?)</code></td><td>Plays only the sound. Without a target it plays flat, for UI.</td></tr>
+      <tr><td><code>Juice.music(name?)</code></td><td>Crossfades to a looping track. <code>Juice.music(nil)</code> stops it.</td></tr>
+    </tbody></table>
+    <div class="code"><pre>local Juice = require(game.ReplicatedStorage.Shared.Juice)
+
+Juice.play("explosion/fire", rocket)
+Juice.sfx("ui/click-2")
+local stop = Juice.attach("aura/electric", character)</pre></div>
+
+    <h2 id="config">Configuration</h2>
+    <p>Set these in your environment or in your project's <code>.env</code>. Keep <code>.env</code> out of version control.</p>
+    <table class="ref"><thead><tr><th>Variable</th><th>Description</th></tr></thead><tbody>
+      <tr><td><code>ROBLOX_API_KEY</code></td><td>An Open Cloud API key with asset write access. Lets <code>add_sfx</code> upload sounds.</td></tr>
+      <tr><td><code>ROBLOX_CREATOR</code></td><td>Who owns uploads: <code>user:&lt;id&gt;</code> or <code>group:&lt;id&gt;</code>.</td></tr>
+      <tr><td><code>BASEPLATE_REGISTRY</code></td><td>Optional. Points the CLI at another catalog, a URL or a local folder.</td></tr>
+    </tbody></table>
+
+    <h2 id="locks">Lock files</h2>
+    <p>Both add tools record what they added in your project root, so you can review it and know where every asset came from.</p>
+    <h3><code>vfx.json</code></h3>
+    <p>One entry per effect: its name, Creator Store asset ID, the path inside the pack, the pinned version and the pack name.</p>
+    <h3><code>sfx.json</code></h3>
+    <p>One entry per sound: its name, the file in your project, its Roblox asset ID once uploaded and its source file.</p>
+    <div class="code"><pre>{
+  "component": "pickup/coin-3",
+  "file": "assets/sounds/pickup/coin-3.ogg",
+  "asset_id": null,
+  "source_file": "baseplate/coin_pickup.ogg"
+}</pre></div>
+
+    <h2 id="cli">CLI</h2>
+    <table class="ref"><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
+      <tr><td><code>npx baseplate-cli mcp</code></td><td>Runs the MCP server for your agent.</td></tr>
+      <tr><td><code>npx baseplate-cli find &lt;words&gt;</code></td><td>Searches the effects yourself.</td></tr>
+      <tr><td><code>npx baseplate-cli sound &lt;words&gt;</code></td><td>Searches the sounds yourself.</td></tr>
+    </tbody></table>
+
+    <h2 id="catalog">Catalog JSON</h2>
+    <p>Agents without MCP can read the same catalog directly.</p>
+    <ul>
+      <li><a class="link" href="../r/vfx-effects.json">vfx-effects.json</a>: every effect with its name, description, category, colors, size, length, pack and pinned version.</li>
+      <li><a class="link" href="../r/sfx-files.json">sfx-files.json</a>: every sound with its name, description, category, file and format.</li>
+    </ul>
+    <h2 id="faq">FAQ</h2>
+    <h3>Is Baseplate free?</h3>
+    <p>Yes. The library, the CLI and the MCP server are free to use. Effects come from free Creator Store packs, and every sound is CC0 or public domain.</p>
+    <h3>Do I need to know Roblox development?</h3>
+    <p>No. Your agent writes the Luau and calls the tools. You describe what you want in plain words and play-test in Studio.</p>
+    <h3>How do sounds get into Roblox?</h3>
+    <p>Roblox only plays audio uploaded to Roblox, so each sound is uploaded once to your own account, where no one else can remove it. With an Open Cloud key in your project's <code>.env</code>, <code>add_sfx</code> uploads for you. Without one, your agent tells you which file to import in Studio's Asset Manager.</p>
+    <h3>What stops a free asset from breaking my game?</h3>
+    <p>Effects are pinned to the scanned version and refused if the pack changes. Sounds are copied into your project and uploaded to your own account. Neither depends on Baseplate staying online.</p>
+  </article>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <a class="logo" href="../"><img src="../brand/baseplate-logo-horizontal-ink.svg" alt="baseplate" width="106" height="24"></a>
+      <p>The component library for building Roblox games with AI.</p>
+    </div>
+    <div><h4>Product</h4><ul><li><a href="../library/">Library</a></li><li><a href="../#results">Results</a></li><li><a href="../#safety">Safety</a></li></ul></div>
+    <div><h4>Developers</h4><ul><li><a href="./">Docs</a></li><li><a href="https://www.npmjs.com/package/baseplate-cli">npm</a></li><li><a href="../r/vfx-effects.json">vfx-effects.json</a></li><li><a href="../r/sfx-files.json">sfx-files.json</a></li></ul></div>
+    <div><h4>Company</h4><ul><li><a href="../vfx-report.html">Scan report</a></li><li><a href="mailto:hello.baseplate@proton.me">Contact</a></li></ul></div>
+    <div class="legal"><span>© 2026 Baseplate.</span><span>Not affiliated with Roblox Corporation.</span></div>
+  </div>
+</footer>
+
+<script>
+document.getElementById("menu").onclick = function () {
+  this.setAttribute("aria-expanded", document.getElementById("nav").classList.toggle("open"));
+};
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    if (navigator.clipboard) navigator.clipboard.writeText(btn.getAttribute("data-copy"));
+    btn.textContent = "Copied";
+    setTimeout(function () { btn.textContent = "Copy"; }, 1400);
+  });
+});
+// Highlight the section in view.
+(function () {
+  var links = {};
+  document.querySelectorAll(".toc a").forEach(function (a) { links[a.getAttribute("href").slice(1)] = a; });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      Object.values(links).forEach(function (a) { a.classList.remove("on"); });
+      if (links[e.target.id]) links[e.target.id].classList.add("on");
+    });
+  }, { rootMargin: "-100px 0px -70% 0px" });
+  document.querySelectorAll("article h2[id]").forEach(function (h) { io.observe(h); });
+})();
+</script>
+</body>
+</html>
