@@ -1,13 +1,13 @@
 <p align="center">
-  <a href="https://baseplatehq.github.io/baseplate/">
+  <a href="https://baseplate.run/">
     <img src="assets/banner.png" alt="baseplate: Safe VFX and sounds your AI can add to Roblox games." width="100%">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://baseplatehq.github.io/baseplate/"><b>Website</b></a> &nbsp;·&nbsp;
-  <a href="https://baseplatehq.github.io/baseplate/library/"><b>Library</b></a> &nbsp;·&nbsp;
-  <a href="https://baseplatehq.github.io/baseplate/docs/"><b>Docs</b></a> &nbsp;·&nbsp;
+  <a href="https://baseplate.run/"><b>Website</b></a> &nbsp;·&nbsp;
+  <a href="https://baseplate.run/library/"><b>Library</b></a> &nbsp;·&nbsp;
+  <a href="https://baseplate.run/docs/"><b>Docs</b></a> &nbsp;·&nbsp;
   <a href="https://www.npmjs.com/package/baseplate-cli"><b>npm</b></a>
 </p>
 
@@ -83,7 +83,7 @@ Juice.sfx("pickup/coin-3", part)
 | `find_sfx` | Searches 906 sounds. Each description is measured from the audio: length, tone or noise, pitch, rising or falling, hits. Returns up to 8. |
 | `add_sfx` | Copies each sound into `assets/sounds/`, registers it in `Sounds.luau` and records it in `sfx.json`. Uploads to Roblox when `ROBLOX_API_KEY` and `ROBLOX_CREATOR` are set in your project's `.env`. |
 
-Browse everything in the [library](https://baseplatehq.github.io/baseplate/library/), or read the full [docs](https://baseplatehq.github.io/baseplate/docs/).
+Browse everything in the [library](https://baseplate.run/library/), or read the full [docs](https://baseplate.run/docs/).
 
 <br>
 
